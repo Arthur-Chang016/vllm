@@ -252,6 +252,12 @@ async def async_request_openai_completions(
         st = time.perf_counter()
         most_recent_timestamp = st
         try:
+            
+            # print("session.post")
+            # print(f"api_url {api_url}")
+            # print(f"payload {payload}")
+            # print(f"headers {headers}")
+            
             async with session.post(url=api_url, json=payload,
                                     headers=headers) as response:
                 if response.status == 200:
@@ -289,6 +295,10 @@ async def async_request_openai_completions(
                     output.success = True
                     output.latency = latency
                 else:
+                    
+                    # print("\n here !~!!!! error !!!! \n")
+                    # print(f"response \n{response}")
+                    
                     output.error = response.reason or ""
                     output.success = False
         except Exception:

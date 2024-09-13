@@ -354,7 +354,18 @@ async def benchmark(
         best_of=best_of,
         use_beam_search=use_beam_search,
     )
+    
+    # test_input.model = '/root/.cache/huggingface/hub/models--meta-llama--Meta-Llama-3-8B/snapshots/62bd457b6fe961a42a631306577e622c83876cb6/'
+    
     test_output = await request_func(request_func_input=test_input)
+    
+    # print()
+    # print()
+    # print(f"test_input {test_input}")
+    # print(f"test_output {test_output}")
+    # print()
+    # print()
+    
     if not test_output.success:
         raise ValueError(
             "Initial test run failed - Please make sure benchmark arguments "

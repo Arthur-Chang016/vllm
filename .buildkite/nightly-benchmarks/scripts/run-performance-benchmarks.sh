@@ -83,7 +83,7 @@ kill_processes_launched_by_current_bash() {
 
 kill_gpu_processes() {
 
-  ps -aux
+  ps -aux > /dev/null
   lsof -t -i:8000 | xargs -r kill -9
   pkill -f pt_main_thread
   # this line doesn't work now
@@ -148,13 +148,14 @@ run_latency_tests() {
     latency_args=$(json2args "$latency_params")
 
     # check if there is enough GPU to run the test
-    tp=$(echo "$latency_params" | jq -r '.tensor_parallel_size')
-    if [[ $gpu_count -lt $tp ]]; then
-      echo "Required tensor-parallel-size $tp but only $gpu_count GPU found. Skip testcase $testname."
-      continue
-    fi
+    # tp=$(echo "$latency_params" | jq -r '.tensor_parallel_size')
+    # if [[ $gpu_count -lt $tp ]]; then
+    #   echo "Required tensor-parallel-size $tp but only $gpu_count GPU found. Skip testcase $testname."
+    #   continue
+    # fi
 
-    latency_command="python3 benchmark_latency.py \
+    # latency_command="python3 benchmark_latency.py \
+    latency_command="python3 /root/vllm/benchmarks/benchmark_latency.py \
       --output-json $RESULTS_FOLDER/${test_name}.json \
       $latency_args"
 
@@ -204,7 +205,10 @@ run_throughput_tests() {
     # get arguments
     throughput_params=$(echo "$params" | jq -r '.parameters')
     throughput_args=$(json2args "$throughput_params")
-
+  
+  
+    declare -g gpu_count=$(nvidia-smi --list-gpus | wc -l)
+    
     # check if there is enough GPU to run the test
     tp=$(echo $throughput_params | jq -r '.tensor_parallel_size')
     if [[ $gpu_count -lt $tp ]]; then
@@ -212,7 +216,8 @@ run_throughput_tests() {
       continue
     fi
 
-    throughput_command="python3 benchmark_throughput.py \
+    # throughput_command="python3 benchmark_throughput.py \
+    throughput_command="python3 /root/vllm/benchmarks/benchmark_throughput.py \
       --output-json $RESULTS_FOLDER/${test_name}.json \
       $throughput_args"
 
@@ -266,6 +271,8 @@ run_serving_tests() {
     qps_list=$(echo "$params" | jq -r '.qps_list')
     qps_list=$(echo "$qps_list" | jq -r '.[] | @sh')
     echo "Running over qps list $qps_list"
+    
+    declare -g gpu_count=$(nvidia-smi --list-gpus | wc -l)
 
     # check if there is enough GPU to run the test
     tp=$(echo "$server_params" | jq -r '.tensor_parallel_size')
@@ -312,10 +319,13 @@ run_serving_tests() {
       fi
 
       new_test_name=$test_name"_qps_"$qps
+      
+      echo "here!!!!!!!!!!!!!!!!!"
 
-      client_command="python3 benchmark_serving.py \
+      # client_command="python3 benchmark_serving.py \
+      client_command="python3 /root/vllm/benchmarks/benchmark_serving.py \
         --save-result \
-        --result-dir $RESULTS_FOLDER \
+        --result-dir / \
         --result-filename ${new_test_name}.json \
         --request-rate $qps \
         $client_args"
@@ -340,7 +350,7 @@ run_serving_tests() {
     done
 
     # clean up
-    kill -9 $server_pid
+    # kill -9 $server_pid
     kill_gpu_processes
   done
 }
@@ -360,7 +370,8 @@ main() {
   export VLLM_LOG_LEVEL="WARNING"
 
   # prepare for benchmarking
-  cd benchmarks || exit 1
+  # cd benchmarks || exit 1
+  cd /root/vllm/benchmarks || exit 1
   ensure_sharegpt_downloaded
   declare -g RESULTS_FOLDER=results/
   mkdir -p $RESULTS_FOLDER
@@ -378,4 +389,12 @@ main() {
   upload_to_buildkite
 }
 
-main "$@"
+# main "$@"
+
+# run_throughput_tests "$@"
+
+# QUICK_BENCHMARK_ROOT=../.buildkite/nightly-benchmarks/
+run_serving_tests /root/vllm/.buildkite/nightly-benchmarks/tests/serving-tests.json
+# run_latency_tests /root/vllm/.buildkite/nightly-benchmarks/tests/latency-tests.json
+# run_throughput_tests /root/vllm/.buildkite/nightly-benchmarks/tests/throughput-tests.json
+
