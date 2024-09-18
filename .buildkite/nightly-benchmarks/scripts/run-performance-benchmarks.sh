@@ -393,8 +393,8 @@ main() {
 
 # run_throughput_tests "$@"
 
+ensure_sharegpt_downloaded
 # QUICK_BENCHMARK_ROOT=../.buildkite/nightly-benchmarks/
 run_serving_tests /root/vllm/.buildkite/nightly-benchmarks/tests/serving-tests.json
 # run_latency_tests /root/vllm/.buildkite/nightly-benchmarks/tests/latency-tests.json
 # run_throughput_tests /root/vllm/.buildkite/nightly-benchmarks/tests/throughput-tests.json
-

@@ -3,7 +3,7 @@
         "test_name": "serving_gpt2_tp1_sharegpt",
         "qps_list": ["inf"],
         "server_parameters": {
-            "model": "/root/.cache/huggingface/hub/models--gpt2/snapshots/607a30d783dfa663caf39e06633721c8d4cfcd7e/",
+            "model": "/root/.cache/huggingface/hub/models--meta-llama--Meta-Llama-3-8B/snapshots/62bd457b6fe961a42a631306577e622c83876cb6/",
             "tensor_parallel_size": 1,
             "swap_space": 8,
             "disable_log_stats": "",
@@ -11,11 +11,11 @@
             "load_format": "dummy"
         },
         "client_parameters": {
-            "model": "/root/.cache/huggingface/hub/models--gpt2/snapshots/607a30d783dfa663caf39e06633721c8d4cfcd7e/",
+            "model": "/root/.cache/huggingface/hub/models--meta-llama--Meta-Llama-3-8B/snapshots/62bd457b6fe961a42a631306577e622c83876cb6/",
             "backend": "vllm",
             "dataset_name": "sharegpt",
             "dataset_path": "/root/vllm/benchmarks/ShareGPT_V3_unfiltered_cleaned_split.json",
-            "num_prompts": 1
+            "num_prompts": 10
         }
     }
 ]

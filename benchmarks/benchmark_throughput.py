@@ -121,20 +121,29 @@ def run_vllm(
     prompts: List[str] = []
     sampling_params: List[SamplingParams] = []
     for prompt, _, output_len in requests:
+        prompt = "output as long as you can"
         prompts.append(prompt)
+        # print(prompt)
         sampling_params.append(
             SamplingParams(
                 n=n,
-                temperature=0.0 if use_beam_search else 1.0,
+                # temperature=0.0 if use_beam_search else 1.0,
+                temperature=0.0,
                 top_p=1.0,
                 use_beam_search=use_beam_search,
                 ignore_eos=True,
-                max_tokens=output_len,
+                max_tokens=1000,
             ))
 
     start = time.perf_counter()
-    llm.generate(prompts, sampling_params, use_tqdm=True)
+    outs = llm.generate(prompts, sampling_params, use_tqdm=True)
     end = time.perf_counter()
+    
+    # print(f"time {(end - start)}")
+    
+    # with open("/root/dump.txt", 'a') as f:
+    #     f.write(f"{(end - start)}\n")
+    
     return end - start
 
 
@@ -336,7 +345,7 @@ def main(args: argparse.Namespace):
         if args.async_engine:
             run_args.append(args.disable_frontend_multiprocessing)
             elapsed_time = uvloop.run(run_vllm_async(*run_args))
-        else:
+        else:  # goes here
             elapsed_time = run_vllm(*run_args)
     elif args.backend == "hf":
         assert args.tensor_parallel_size == 1
@@ -348,13 +357,6 @@ def main(args: argparse.Namespace):
                                args.output_len)
     else:
         raise ValueError(f"Unknown backend: {args.backend}")
-        
-    # print(f"prompt_len {prompt_len}")
-    
-    ind = 0
-    for _, prompt_len, output_len in requests:
-        print(f"{ind} : prompt {prompt_len}, output_len {output_len}")
-        ind += 1
     
     total_num_tokens = sum(prompt_len + output_len
                            for _, prompt_len, output_len in requests)
