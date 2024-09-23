@@ -323,7 +323,7 @@ run_serving_tests() {
       echo "here!!!!!!!!!!!!!!!!!"
 
       # client_command="python3 benchmark_serving.py \
-      client_command="python3 /root/vllm/benchmarks/benchmark_serving.py \
+      client_command="python3 /root/vllm_dev/benchmarks/benchmark_serving.py \
         --save-result \
         --result-dir / \
         --result-filename ${new_test_name}.json \
@@ -395,6 +395,6 @@ main() {
 
 ensure_sharegpt_downloaded
 # QUICK_BENCHMARK_ROOT=../.buildkite/nightly-benchmarks/
-run_serving_tests /root/vllm/.buildkite/nightly-benchmarks/tests/serving-tests.json
+# run_serving_tests /root/vllm_dev/.buildkite/nightly-benchmarks/tests/serving-tests.json
 # run_latency_tests /root/vllm/.buildkite/nightly-benchmarks/tests/latency-tests.json
-# run_throughput_tests /root/vllm/.buildkite/nightly-benchmarks/tests/throughput-tests.json
+run_throughput_tests /root/vllm/.buildkite/nightly-benchmarks/tests/throughput-tests.json

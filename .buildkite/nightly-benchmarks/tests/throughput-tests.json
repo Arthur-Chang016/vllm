@@ -2,11 +2,11 @@
     {
         "test_name": "throughput_llama8B_tp1",
         "parameters": {
-            "model": "/root/.cache/huggingface/hub/models--gpt2/snapshots/607a30d783dfa663caf39e06633721c8d4cfcd7e/",
+            "model": "/root/.cache/huggingface/hub/models--meta-llama--Meta-Llama-3-8B-Instruct/snapshots/e1945c40cd546c78e41f1151f4db032b271faeaa",
             "tensor_parallel_size": 1,
             "load_format": "dummy",
             "dataset": "/root/vllm/benchmarks/ShareGPT_V3_unfiltered_cleaned_split.json",
-            "num_prompts": 1,
+            "num_prompts": 4,
             "backend": "vllm"
         }
     }

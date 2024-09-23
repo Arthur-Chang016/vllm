@@ -101,7 +101,8 @@ def run_vllm(
         trust_remote_code=trust_remote_code,
         dtype=dtype,
         max_model_len=max_model_len,
-        gpu_memory_utilization=gpu_memory_utilization,
+        # gpu_memory_utilization=gpu_memory_utilization,
+        gpu_memory_utilization=1.0,
         enforce_eager=enforce_eager,
         kv_cache_dtype=kv_cache_dtype,
         quantization_param_path=quantization_param_path,
@@ -116,12 +117,15 @@ def run_vllm(
         use_v2_block_manager=use_v2_block_manager,
         disable_async_output_proc=disable_async_output_proc,
     )
+    
+    hi2000 = "hi " * 3
 
     # Add the requests to the engine.
     prompts: List[str] = []
     sampling_params: List[SamplingParams] = []
     for prompt, _, output_len in requests:
-        prompt = "output as long as you can"
+        # prompt = "output as long as you can"
+        prompt = hi2000
         prompts.append(prompt)
         # print(prompt)
         sampling_params.append(
@@ -132,12 +136,22 @@ def run_vllm(
                 top_p=1.0,
                 use_beam_search=use_beam_search,
                 ignore_eos=True,
-                max_tokens=1000,
+                max_tokens=2,
             ))
 
     start = time.perf_counter()
     outs = llm.generate(prompts, sampling_params, use_tqdm=True)
     end = time.perf_counter()
+    
+    # breakpoint()
+    
+    # outs[0]
+    
+    # for i, out in enumerate(outs):
+    #     print(i)
+    #     print(out.outputs[0].text)
+    
+    # print(outs.choices[0].message)
     
     # print(f"time {(end - start)}")
     
