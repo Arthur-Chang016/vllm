@@ -1,6 +1,7 @@
 """Benchmark offline inference throughput."""
 import argparse
 import json
+import os
 import random
 import time
 from typing import List, Optional, Tuple
@@ -118,7 +119,11 @@ def run_vllm(
         disable_async_output_proc=disable_async_output_proc,
     )
     
-    hi2000 = "hi " * 3
+    # os.environ["VLLM_TORCH_PROFILER_DIR"] = "~/vllm_profile"
+    
+    hi2000 = "hi " * 2
+    
+    # print(f"requests {requests}")
 
     # Add the requests to the engine.
     prompts: List[str] = []
@@ -138,10 +143,16 @@ def run_vllm(
                 ignore_eos=True,
                 max_tokens=2,
             ))
+    
+    print(f"")
+    
+    # llm.start_profile()
 
     start = time.perf_counter()
     outs = llm.generate(prompts, sampling_params, use_tqdm=True)
     end = time.perf_counter()
+    
+    # llm.stop_profile()
     
     # breakpoint()
     

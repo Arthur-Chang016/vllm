@@ -3,20 +3,23 @@ import os
 from vllm import LLM, SamplingParams
 
 # enable torch profiler, can also be set on cmd line
-os.environ["VLLM_TORCH_PROFILER_DIR"] = "./vllm_profile"
+os.environ["VLLM_TORCH_PROFILER_DIR"] = "~/vllm_profile"
 
 # Sample prompts.
 prompts = [
-    "Hello, my name is",
-    "The president of the United States is",
-    "The capital of France is",
-    "The future of AI is",
+    "Hi",
+    
+    # "Hello, my name is",
+    # "The president of the United States is",
+    # "The capital of France is",
+    # "The future of AI is",
 ]
 # Create a sampling params object.
-sampling_params = SamplingParams(temperature=0.8, top_p=0.95)
+sampling_params = SamplingParams(temperature=0, top_p=1)
 
 # Create an LLM.
-llm = LLM(model="facebook/opt-125m", tensor_parallel_size=1)
+# llm = LLM(model="facebook/opt-125m", tensor_parallel_size=1)
+llm = LLM(model="meta-llama/Meta-Llama-3-8B-Instruct", tensor_parallel_size=1)
 
 llm.start_profile()
 

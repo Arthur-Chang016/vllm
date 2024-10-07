@@ -157,6 +157,8 @@ run_latency_tests() {
     # latency_command="python3 benchmark_latency.py \
     latency_command="python3 /root/vllm/benchmarks/benchmark_latency.py \
       --output-json $RESULTS_FOLDER/${test_name}.json \
+      --profile \
+      --profile-result-dir ~/profile \
       $latency_args"
 
     echo "Running test case $test_name"
